@@ -45,6 +45,21 @@ public class CountriesController {
             countries = countriesService.getCountriesByName(countries, name);
         }
 
+        if (population != null) {
+            countries = countriesService.getCountryByPopulation(countries, population);
+        }
+
+
+        for (Country country : countries) {
+            System.out.println(country.getName().getCommon() + " --- " + country.getPopulation());
+        }
+
+        System.out.println(countries.size());
+        System.out.println(name);
+        System.out.println(population);
+        System.out.println(order);
+        System.out.println(limit);
+
         return !countries.isEmpty()
                 ? new ResponseEntity<>(countries, HttpStatus.OK)
                 : new ResponseEntity<>(countries, HttpStatus.NOT_FOUND);

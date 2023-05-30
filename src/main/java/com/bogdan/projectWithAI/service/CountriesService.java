@@ -7,4 +7,6 @@ import java.util.List;
 public interface CountriesService {
 
     List<Country> getCountriesByName(List<Country> countries, String name);
+
+    List<Country> getCountryByPopulation(List<Country> countries, Long population);
 }
