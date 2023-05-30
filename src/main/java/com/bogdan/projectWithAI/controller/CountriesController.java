@@ -28,9 +28,9 @@ public class CountriesController {
     @GetMapping("/countries")
     @ResponseBody
     private ResponseEntity<List<Country>> getCountries(@RequestParam(required = false, name = "name") String name,
-                                                       @RequestParam(required = false, name = "pop") Long population,
+                                                       @RequestParam(required = false, name = "pop") String population,
                                                        @RequestParam(required = false, name = "order") String order,
-                                                       @RequestParam(required = false, name = "limit") Integer limit) {
+                                                       @RequestParam(required = false, name = "size") String size) {
         RestTemplate restTemplate = new RestTemplate();
 
         ResponseEntity<List<Country>> response = restTemplate.exchange(BASE_URL, HttpMethod.GET, null,
@@ -46,12 +46,27 @@ public class CountriesController {
         }
 
         if (population != null) {
-            countries = countriesService.getCountryByPopulation(countries, population);
+            countries = countriesService.getCountriesByPopulation(countries, population);
         }
 
         if (order != null) {
-            countries = countriesService.sortCountryByOrder(countries, order);
+            countries = countriesService.sortCountriesByOrder(countries, order);
         }
+
+        if (size != null) {
+            countries = countriesService.limitCountries(countries, size);
+        }
+
+
+        for (Country country : countries) {
+            System.out.println(country.getName().getCommon() + " --- " + country.getPopulation());
+        }
+
+        System.out.println(countries.size());
+        System.out.println(name);
+        System.out.println(population);
+        System.out.println(order);
+        System.out.println(size);
 
         return !countries.isEmpty()
                 ? new ResponseEntity<>(countries, HttpStatus.OK)

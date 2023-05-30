@@ -26,20 +26,20 @@ public class CountriesServiceImpl implements CountriesService {
     }
 
     @Override
-    public List<Country> getCountryByPopulation(List<Country> countries, Long population) {
-        boolean isValid = Pattern.matches("^[0-9]{1,4}$", population.toString());
+    public List<Country> getCountriesByPopulation(List<Country> countries, String population) {
+        boolean isValid = Pattern.matches("^[0-9]{1,4}$", population);
 
         if (!isValid) {
             throw new CountriesParameterValidateException("Invalid 'population' format. Only numbers are allowed (max: 9999).");
         }
 
         return countries.stream()
-                .filter(pop -> pop.getPopulation() < population * 1000000)
+                .filter(pop -> pop.getPopulation() < Long.parseLong(population) * 1000000)
                 .toList();
     }
 
     @Override
-    public List<Country> sortCountryByOrder(List<Country> countries, String order) {
+    public List<Country> sortCountriesByOrder(List<Country> countries, String order) {
         if (!order.equals("asc") && !order.equals("desc")) {
             throw new CountriesParameterValidateException("Invalid 'order' format. Only 'asc' or 'desc' are allowed.");
         }
@@ -53,5 +53,19 @@ public class CountriesServiceImpl implements CountriesService {
         return countries.stream()
                 .sorted(comparator)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Country> limitCountries(List<Country> countries, String size) {
+        boolean isValid = Pattern.matches("^[0-9]{1,4}$", size);
+
+        if (!isValid) {
+            throw new CountriesParameterValidateException("Invalid 'size' format. Only numbers are allowed (max: 9999).");
+        }
+
+        int dataSize = countries.size();
+        int endIndex = Math.min(Integer.parseInt(size), dataSize);
+
+        return countries.subList(0, endIndex);
     }
 }
