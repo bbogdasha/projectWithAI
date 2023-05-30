@@ -1,0 +1,54 @@
+User
+Використовуючи твій приклад вище з сортування, як його модифікувати, щоб в залежності від параметра в методі (String order)  він робив або звичайне сортування, або реверсивне сортування?
+
+public List<Country> sortCountryByOrder(List<Country> countries, String order) {
+        return countries.stream()
+                .sorted(Comparator.comparing(c -> c.getName().getCommon()))
+                .toList();
+    }
+
+ChatGPT
+Для модифікації методу sortCountryByOrder() таким чином, щоб в залежності від параметра order він робив звичайне або реверсивне сортування, можна додати перевірку значення параметра та використати метод reversed() для компаратора у випадку реверсивного сортування. Ось оновлений приклад коду:
+
+java
+Copy code
+public List<Country> sortCountryByOrder(List<Country> countries, String order) {
+    Comparator<Country> comparator = Comparator.comparing(c -> c.getName().getCommon());
+    
+    if (order.equals("reverse")) {
+        comparator = comparator.reversed();
+    }
+    
+    return countries.stream()
+        .sorted(comparator)
+        .collect(Collectors.toList());
+}
+У цьому прикладі, якщо значення параметра order дорівнює "reverse", то компаратор буде модифіковано за допомогою методу reversed(). В іншому випадку, застосовується звичайний компаратор. Результат сортування відповідно до вибраного порядку збирається у список та повертається з методу.
+
+
+
+
+
+User
+Перевірь цей метод sortCountryByOrder і модифікуй метод, як краще провалідувати параметр name, щоб він міг приймати або строку 'asc' або 'desc', і якщо було щось інше, то викидувалась би помилка. Відповідно, якщо отримаємо asc, то робиться звичайне сортування по Common назві країни, якщо desc, то реверсивне сортування.
+ChatGPT
+Ось модифікований метод sortCountryByOrder, який валідує параметр name і здійснює сортування в залежності від переданого значення "asc" або "desc". Якщо значення не відповідає цим двом варіантам, викидається помилка IllegalArgumentException:
+
+java
+Copy code
+public List<Country> sortCountryByOrder(List<Country> countries, String order) {
+    if (!order.equals("asc") && !order.equals("desc")) {
+        throw new IllegalArgumentException("Invalid sort order. Only 'asc' or 'desc' are allowed.");
+    }
+
+    Comparator<Country> comparator = Comparator.comparing(c -> c.getName().getCommon());
+
+    if (order.equals("desc")) {
+        comparator = comparator.reversed();
+    }
+
+    return countries.stream()
+            .sorted(comparator)
+            .toList();
+}
+У цьому методі ми спочатку перевіряємо, чи значення name є "asc" або "desc". Якщо ні, викидається виняток IllegalArgumentException. Якщо значення є "desc", то створюємо компаратор, який виконує реверсивне сортування. В іншому випадку, залишається звичайне сортування. Нарешті, список країн сортується за заданим порядком і повертається результат.

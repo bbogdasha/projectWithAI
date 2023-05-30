@@ -4,8 +4,10 @@ import com.bogdan.projectWithAI.exception.CountriesParameterValidateException;
 import com.bogdan.projectWithAI.model.Country;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class CountriesServiceImpl implements CountriesService {
@@ -34,5 +36,22 @@ public class CountriesServiceImpl implements CountriesService {
         return countries.stream()
                 .filter(pop -> pop.getPopulation() < population * 1000000)
                 .toList();
+    }
+
+    @Override
+    public List<Country> sortCountryByOrder(List<Country> countries, String order) {
+        if (!order.equals("asc") && !order.equals("desc")) {
+            throw new CountriesParameterValidateException("Invalid 'order' format. Only 'asc' or 'desc' are allowed.");
+        }
+
+        Comparator<Country> comparator = Comparator.comparing(c -> c.getName().getCommon());
+
+        if (order.equals("desc")) {
+            comparator = comparator.reversed();
+        }
+
+        return countries.stream()
+                .sorted(comparator)
+                .collect(Collectors.toList());
     }
 }
