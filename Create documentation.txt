@@ -1,0 +1,424 @@
+User
+Зроби опис мого додатка в форматі .md (Markdown), приблизно 2 параграфа та 10 речень. Це повина бути технічна документація, не використовуй такі структури речення як 'Я зробив...'. Використовуй такі факти про додаток:
+Додаток був написаний на Java 17 версії, Spring Boot 3.1.0.
+Для розробки або допомоги в розробці був використаний ChatGPT 3.5.
+Додаток використовує публічну API, яка надає JSON з різними даними про країни (можеш привести якийсь не великий приклад).
+Додаток використовує тільки один метод контролеру getCountries, що може приймати 4 параметри name, population, order, size.
+В залежності від наданих параметрів виконуються відповідні методи сервісу, є такі методи: getCountriesByName,  getCountriesByPopulation, sortCountriesByOrder, limitCountries.
+Також в додатку імплемітов перехоплювач помилок ExceptionHand, та перевірка валідації введених даних в параметрах в кожному методі.
+В додатку реалізовані Unit тести за допомогою JUnit.
+
+Намагайся використовувати синтаксис формату .md
+ChatGPT
+Technical Documentation: Country Information Application
+The Country Information Application is a Java-based web application developed using Java 17 and Spring Boot 3.1.0. It utilizes the capabilities of ChatGPT 3.5 for development and assistance in the development process.
+
+Overview
+The application serves as a consumer of a public API that provides JSON data about various countries. This API offers a wide range of information, including country names, population, currencies, languages, and more. The application exposes a single controller method, getCountries, which accepts four optional parameters: name, population, order, and size.
+
+Controller and Service Functionality
+The getCountries method of the controller acts as the entry point for retrieving country information. Depending on the provided parameters, the method internally invokes different service methods to perform the desired operations. The available service methods are as follows:
+
+getCountriesByName: Retrieves a list of countries based on the specified name parameter.
+getCountriesByPopulation: Filters countries based on the population parameter.
+sortCountriesByOrder: Sorts the countries in ascending or descending order based on the order parameter.
+limitCountries: Limits the number of countries returned based on the size parameter.
+The application incorporates exception handling through an ExceptionHandler component. It captures and handles any errors or exceptions that may occur during the execution of the application, providing appropriate error messages to the client.
+
+Validation and Unit Testing
+Each service method includes validation checks to ensure the provided input parameters are valid. If an invalid parameter is detected, a CountriesParameterValidateException is thrown with an accompanying error message.
+
+The application also includes unit tests implemented using JUnit. These tests cover various scenarios and verify the correctness of the individual components, such as the service methods, validation logic, and exception handling.
+
+Example API response for a country:
+
+json
+Copy code
+{
+  "name": {
+    "common": "United States of America",
+    "official": "United States of America",
+    "nativeName": {
+      "eng": {
+        "official": "United States of America",
+        "common": "United States of America"
+      }
+    }
+  },
+  "population": 331002651,
+  "area": 9629091,
+  "capital": [
+    "Washington, D.C."
+  ],
+  "languages": {
+    "eng": "English"
+  },
+  "currencies": {
+    "USD": {
+      "name": "United States dollar",
+      "symbol": "$"
+    }
+  },
+  ...
+}
+This documentation provides an overview of the Country Information Application, its functionality, and the technologies used to develop it. It highlights the key components, such as the controller, service methods, validation, error handling, and unit testing.
+
+
+
+
+
+User
+Напиши окремо ще розділ документації також у форматі .md (Markdown), це повина бути інструкція, як запустити цей додаток локально на іншому комп'ютері. Уяви, що додаток з усіма необхідними файлами заархівовано. Опиши покроково. Для запуску додатка знадобиться середа розробки (intellij idea, eclipse ...), встановлена Java. Також для побудови проекту і запуску використовуй термінальні операції: mvn spring-boot:run, mvn spring-boot:start, mvn spring-boot:stop. Також додай додаткої степи для запуску тестів mvn clean package.
+ChatGPT
+Application Deployment Guide
+This guide provides step-by-step instructions on how to run the Country Information Application locally on another computer. The application's necessary files are assumed to be archived and available for deployment.
+
+Prerequisites
+Before proceeding with the application deployment, ensure that the following prerequisites are met:
+
+Development Environment: Install a suitable development environment such as IntelliJ IDEA or Eclipse.
+Java: Ensure that Java is installed on the computer.
+Terminal Operations: Familiarize yourself with terminal commands, as the application will be built and launched using terminal operations.
+Maven: Verify that Maven is installed on the system to manage the project dependencies and build process.
+Deployment Steps
+To deploy the Country Information Application, follow these steps:
+
+Extract the application archive to a desired location on your computer.
+
+Open the chosen development environment (IntelliJ IDEA, Eclipse, etc.) and import the extracted project as an existing Maven project.
+
+Allow the development environment to resolve the project's dependencies and configure the project structure.
+
+Once the project is successfully imported, navigate to the terminal window within the development environment.
+
+Run the following command to build and run the application:
+
+shell
+Copy code
+mvn spring-boot:run
+This command compiles the source code, resolves dependencies, and starts the application using Spring Boot.
+
+Wait for the application to start successfully. Once it is up and running, you should see a message indicating that the application has started and is listening for incoming requests.
+
+Open a web browser and access the application using the provided URL. By default, the application runs on http://localhost:8080.
+
+You can now interact with the Country Information Application through the available endpoints, providing the appropriate parameters to retrieve the desired country information.
+
+Running Tests
+To run the application's tests, follow these additional steps:
+
+Ensure that the application is not currently running.
+
+Open the terminal window within the development environment.
+
+Run the following command to execute the tests:
+
+shell
+Copy code
+mvn clean package
+This command compiles the source code, executes the tests, and generates the test report.
+
+Wait for the tests to complete. The test results will be displayed in the terminal, indicating the number of tests executed and their status (passing or failing).
+
+Additionally, the test report can be accessed within the project's directory under the /target/surefire-reports folder.
+
+By following these steps, you should be able to successfully deploy the Country Information Application locally on your computer and run the provided tests using Maven commands.
+
+
+
+
+
+User
+Приведи до 10 прикладів використання цього методу контролера. Також у форматі .md, як документація. Спробуй зробити на кшталт Swagger, де вказаний ендпоінт запиту і відповідь. Не пиши на кожний приклад JSON, як приклад відповіді.
+ChatGPT
+Country Information API Examples
+The Country Information API provides various endpoints to retrieve information about countries. This documentation presents 10 examples demonstrating the usage of the controller's methods. Each example includes the request endpoint and the corresponding response.
+
+Example 1: Get Countries by Name
+Request
+Endpoint: /countries?name=usa
+Method: GET
+Response
+Status Code: 200 (OK)
+
+Body:
+
+json
+Copy code
+[
+  {
+    "name": {
+      "common": "United States of America"
+    },
+    "population": 331002651,
+    "capital": "Washington, D.C.",
+    "currency": "USD"
+    // Additional country information
+  }
+]
+Example 2: Get Countries by Population
+Request
+Endpoint: /countries?population=100
+Method: GET
+Response
+Status Code: 200 (OK)
+
+Body:
+
+json
+Copy code
+[
+  {
+    "name": {
+      "common": "Country 1"
+    },
+    "population": 50,
+    "capital": "Capital 1",
+    "currency": "Currency 1"
+    // Additional country information
+  },
+  {
+    "name": {
+      "common": "Country 2"
+    },
+    "population": 90,
+    "capital": "Capital 2",
+    "currency": "Currency 2"
+    // Additional country information
+  }
+]
+Example 3: Sort Countries in Ascending Order
+Request
+Endpoint: /countries?order=asc
+Method: GET
+Response
+Status Code: 200 (OK)
+
+Body:
+
+json
+Copy code
+[
+  {
+    "name": {
+      "common": "Country 1"
+    },
+    "population": 50,
+    "capital": "Capital 1",
+    "currency": "Currency 1"
+    // Additional country information
+  },
+  {
+    "name": {
+      "common": "Country 2"
+    },
+    "population": 90,
+    "capital": "Capital 2",
+    "currency": "Currency 2"
+    // Additional country information
+  }
+]
+Example 4: Limit Countries by Size
+Request
+Endpoint: /countries?size=2
+Method: GET
+Response
+Status Code: 200 (OK)
+
+Body:
+
+json
+Copy code
+[
+  {
+    "name": {
+      "common": "Country 1"
+    },
+    "population": 50,
+    "capital": "Capital 1",
+    "currency": "Currency 1"
+    // Additional country information
+  },
+  {
+    "name": {
+      "common": "Country 2"
+    },
+    "population": 90,
+    "capital": "Capital 2",
+    "currency": "Currency 2"
+    // Additional country information
+  }
+]
+Example 5: Get Countries by Name and Population
+Request
+Endpoint: /countries?name=usa&population=100
+Method: GET
+Response
+Status Code: 200 (OK)
+
+Body:
+
+json
+Copy code
+[
+  {
+    "name": {
+      "common": "United States of America"
+    },
+    "population": 331002651,
+    "capital": "Washington, D.C.",
+    "currency": "USD"
+    // Additional country information
+  }
+]
+Example 6: Get Countries by Name and Order
+Request
+Endpoint: /countries?name=germany&order=asc
+Method: GET
+Response
+Status Code: 200 (OK)
+
+Body:
+
+json
+Copy code
+[
+  {
+    "name": {
+      "common": "Germany"
+    },
+    "population": 83783942,
+    "capital": "Berlin",
+    "currency": "EUR"
+    // Additional country information
+  }
+]
+Example 7: Get Countries by Population and Size
+Request
+Endpoint: /countries?population=100&size=3
+Method: GET
+Response
+Status Code: 200 (OK)
+
+Body:
+
+json
+Copy code
+[
+  {
+    "name": {
+      "common": "Country 1"
+    },
+    "population": 50,
+    "capital": "Capital 1",
+    "currency": "Currency 1"
+    // Additional country information
+  },
+  {
+    "name": {
+      "common": "Country 2"
+    },
+    "population": 90,
+    "capital": "Capital 2",
+    "currency": "Currency 2"
+    // Additional country information
+  },
+  {
+    "name": {
+      "common": "Country 3"
+    },
+    "population": 120,
+    "capital": "Capital 3",
+    "currency": "Currency 3"
+    // Additional country information
+  }
+]
+Example 8: Get Countries by Order and Size
+Request
+Endpoint: /countries?order=desc&size=5
+Method: GET
+Response
+Status Code: 200 (OK)
+
+Body:
+
+json
+Copy code
+[
+  {
+    "name": {
+      "common": "Country 5"
+    },
+    "population": 300,
+    "capital": "Capital 5",
+    "currency": "Currency 5"
+    // Additional country information
+  },
+  {
+    "name": {
+      "common": "Country 4"
+    },
+    "population": 250,
+    "capital": "Capital 4",
+    "currency": "Currency 4"
+    // Additional country information
+  },
+  {
+    "name": {
+      "common": "Country 3"
+    },
+    "population": 200,
+    "capital": "Capital 3",
+    "currency": "Currency 3"
+    // Additional country information
+  },
+  {
+    "name": {
+      "common": "Country 2"
+    },
+    "population": 150,
+    "capital": "Capital 2",
+    "currency": "Currency 2"
+    // Additional country information
+  },
+  {
+    "name": {
+      "common": "Country 1"
+    },
+    "population": 100,
+    "capital": "Capital 1",
+    "currency": "Currency 1"
+    // Additional country information
+  }
+]
+Example 9: Get All Countries (No Parameters)
+Request
+Endpoint: /countries
+Method: GET
+Response
+Status Code: 200 (OK)
+
+Body:
+
+json
+Copy code
+[
+  {
+    "name": {
+      "common": "Country 1"
+    },
+    "population": 50,
+    "capital": "Capital 1",
+    "currency": "Currency 1"
+    // Additional country information
+  },
+  {
+    "name": {
+      "common": "Country 2"
+    },
+    "population": 90,
+    "capital": "Capital 2",
+    "currency": "Currency 2"
+    // Additional country information
+  },
+  // Additional countries
