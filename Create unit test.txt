@@ -1,0 +1,1110 @@
+User
+Згенеруй unit тести написані за допомогою Spring Boot та Mock для getCountriesByName методу сервіса 
+
+public List<Country> getCountriesByName(List<Country> countries, String name) {
+        boolean isValid = Pattern.matches("^[a-zA-Z]{1,36}$", name);
+
+        if (!isValid) {
+            throw new CountriesParameterValidateException("Invalid 'name' format. Only letters are allowed.");
+        }
+
+        return countries.stream()
+                .filter(n -> n.getName().getCommon().toLowerCase().contains(name.toLowerCase()))
+                .toList();
+    }
+ChatGPT
+Ось приклад unit-тесту для методу getCountriesByName сервіса, використовуючи Spring Boot та Mockito:
+
+java
+Copy code
+@RunWith(MockitoJUnitRunner.class)
+public class CountryServiceTests {
+
+    @InjectMocks
+    private CountryService countryService;
+
+    @Test
+    public void testGetCountriesByName_ValidName() {
+        // Arrange
+        List<Country> countries = new ArrayList<>();
+        countries.add(new Country(new CountryName("USA"), ...));
+        countries.add(new Country(new CountryName("Canada"), ...));
+        countries.add(new Country(new CountryName("Germany"), ...));
+
+        String name = "an";
+
+        // Act
+        List<Country> result = countryService.getCountriesByName(countries, name);
+
+        // Assert
+        assertEquals(2, result.size());
+        assertTrue(result.stream().allMatch(country -> country.getName().getCommon().toLowerCase().contains(name.toLowerCase())));
+    }
+
+    @Test(expected = CountriesParameterValidateException.class)
+    public void testGetCountriesByName_InvalidName() {
+        // Arrange
+        List<Country> countries = new ArrayList<>();
+        countries.add(new Country(new CountryName("USA"), ...));
+
+        String name = "Invalid123";
+
+        // Act
+        countryService.getCountriesByName(countries, name);
+    }
+}
+У цьому прикладі ми використовуємо аннотацію @RunWith(MockitoJUnitRunner.class) для ініціалізації моків та інжектуємо сервіс CountryService за допомогою аннотації @InjectMocks.
+
+Перший тест testGetCountriesByName_ValidName перевіряє правильність фільтрації країн за назвою. Ми передаємо список країн з різними назвами та шукаємо країни з назвою "an". Перевіряємо, що кількість знайдених країн та їх назви відповідають очікуваному результату.
+
+Другий тест testGetCountriesByName_InvalidName перевіряє обробку помилки в разі передачі неприпустимого формату назви. Ми передаємо неприпустиму назву "Invalid123" та очікуємо, що буде кинуто виключення CountriesParameterValidateException.
+
+Ці тести демонструють приклади unit-тестування методу getCountriesByName сервісу за допомогою Spring Boot та Mockito. Вам потрібно підготувати вхідні дані (список країн) відповідно до вашої логіки та перевірити очікуваний результат.
+
+
+
+
+
+User
+Порівняй дві анотації перед класом тесту @ExtendWith(MockitoExtension.class) та @RunWith(MockitoJUnitRunner.class)
+ChatGPT
+Анотація @ExtendWith(MockitoExtension.class) та анотація @RunWith(MockitoJUnitRunner.class) використовуються для інтеграції з фреймворком Mockito в JUnit-тестах. Однак, вони використовуються в різних версіях JUnit та мають трохи різну семантику.
+
+Анотація @ExtendWith(MockitoExtension.class) є анотацією JUnit 5 і використовується з JUnit Jupiter (версія JUnit, що починається з 5.x). Вона вказує на розширення (extension) MockitoExtension, яке інтегрує функціональність Mockito в JUnit Jupiter. Це означає, що ви можете використовувати Mockito-моки, аннотації Mockito (такі як @Mock, @InjectMocks, @Spy і т. д.) і методи Mockito (такі як Mockito.when(), Mockito.verify() і т. д.) в своїх JUnit 5 тестах.
+
+Приклад використання @ExtendWith(MockitoExtension.class):
+
+java
+Copy code
+@ExtendWith(MockitoExtension.class)
+public class MyTest {
+    // ...
+}
+З іншого боку, анотація @RunWith(MockitoJUnitRunner.class) є анотацією JUnit 4 і використовується з JUnit 4.x. Вона вказує на використання MockitoJUnitRunner, який керує процесом ініціалізації моків та інших Mockito-об'єктів для тесту. MockitoJUnitRunner автоматично створює моки та інші об'єкти Mockito, що позначені анотаціями, перед запуском кожного тесту.
+
+Приклад використання @RunWith(MockitoJUnitRunner.class):
+
+java
+Copy code
+@RunWith(MockitoJUnitRunner.class)
+public class MyTest {
+    // ...
+}
+Вибір між цими двома анотаціями залежить від версії JUnit, яку ви використовуєте. Якщо ви використовуєте JUnit Jupiter (JUnit 5), то вам слід використовувати @ExtendWith(MockitoExtension.class). Якщо ви використовуєте JUnit 4, то можете використовувати @RunWith(MockitoJUnitRunner.class).
+
+
+
+
+
+User
+Згенеруй патерн Builder для цієї моделі Country, тобто внутрішній статичний клас CountryBuilder
+
+public class Country {
+
+    private CountryName name;
+
+    private List<String> tld;
+
+    private String cca2;
+
+    private String ccn3;
+
+    private String cca3;
+
+    private String cioc;
+
+    private boolean independent;
+
+    private String status;
+
+    private boolean unMember;
+
+    private Map<String, Map<String, String>> currencies;
+
+    private CountryIdd idd;
+
+    private List<String> capital;
+
+    private List<String> altSpellings;
+
+    private String region;
+
+    private String subregion;
+
+    private Map<String, String> languages;
+
+    private Map<String, Map<String, String>> translations;
+
+    private List<Double> latlng;
+
+    private boolean landlocked;
+
+    private List<String> borders;
+
+    private double area;
+
+    private Map<String, Map<String, String>> demonyms;
+
+    private String flag;
+
+    private Map<String, String> maps;
+
+    private Long population;
+
+    private Map<String, Double> gini;
+
+    private String fifa;
+
+    private CountryCar car;
+
+    private List<String> timezones;
+
+    private List<String> continents;
+
+    private Map<String, String> flags;
+
+    private Map<String, String> coatOfArms;
+
+    private String startOfWeek;
+
+    private Map<String, List<Double>> capitalInfo;
+
+    private Map<String, String> postalCode;
+}
+ChatGPT
+Ось приклад реалізації патерну Builder для класу Country:
+
+java
+Copy code
+public class Country {
+
+    private CountryName name;
+    private List<String> tld;
+    private String cca2;
+    private String ccn3;
+    private String cca3;
+    private String cioc;
+    private boolean independent;
+    private String status;
+    private boolean unMember;
+    private Map<String, Map<String, String>> currencies;
+    private CountryIdd idd;
+    private List<String> capital;
+    private List<String> altSpellings;
+    private String region;
+    private String subregion;
+    private Map<String, String> languages;
+    private Map<String, Map<String, String>> translations;
+    private List<Double> latlng;
+    private boolean landlocked;
+    private List<String> borders;
+    private double area;
+    private Map<String, Map<String, String>> demonyms;
+    private String flag;
+    private Map<String, String> maps;
+    private Long population;
+    private Map<String, Double> gini;
+    private String fifa;
+    private CountryCar car;
+    private List<String> timezones;
+    private List<String> continents;
+    private Map<String, String> flags;
+    private Map<String, String> coatOfArms;
+    private String startOfWeek;
+    private Map<String, List<Double>> capitalInfo;
+    private Map<String, String> postalCode;
+
+    private Country() {
+        // private constructor to enforce the use of the builder
+    }
+
+    public static class CountryBuilder {
+        private Country country;
+
+        public CountryBuilder() {
+            country = new Country();
+        }
+
+        public CountryBuilder withName(CountryName name) {
+            country.name = name;
+            return this;
+        }
+
+        public CountryBuilder withTld(List<String> tld) {
+            country.tld = tld;
+            return this;
+        }
+
+        public CountryBuilder withCca2(String cca2) {
+            country.cca2 = cca2;
+            return this;
+        }
+
+        public CountryBuilder withCcn3(String ccn3) {
+            country.ccn3 = ccn3;
+            return this;
+        }
+
+        public CountryBuilder withCca3(String cca3) {
+            country.cca3 = cca3;
+            return this;
+        }
+
+        // ... continue with the remaining fields
+
+        public Country build() {
+            return country;
+        }
+    }
+}
+Використання патерну Builder дозволяє зручно створювати об'єкти класу Country, дозволяючи встановлювати значення для певних полів за допомогою ланцюжків методів withXxx(). Наприклад, для створення об'єкта Country зі значеннями полів name, tld і cca2, ви можете використовувати наступний код:
+
+java
+Copy code
+Country country = new Country.CountryBuilder()
+                .withName(name)
+                .withTld(tld)
+                .withCca2(cca2)
+                .build();
+
+
+
+
+User
+Заверши свій приклад Builder до кінця, не пропускаючи інші поля
+ChatGPT
+Ось завершена реалізація патерну Builder для класу Country, включаючи всі поля:
+
+java
+Copy code
+public class Country {
+
+    private CountryName name;
+    private List<String> tld;
+    private String cca2;
+    private String ccn3;
+    private String cca3;
+    private String cioc;
+    private boolean independent;
+    private String status;
+    private boolean unMember;
+    private Map<String, Map<String, String>> currencies;
+    private CountryIdd idd;
+    private List<String> capital;
+    private List<String> altSpellings;
+    private String region;
+    private String subregion;
+    private Map<String, String> languages;
+    private Map<String, Map<String, String>> translations;
+    private List<Double> latlng;
+    private boolean landlocked;
+    private List<String> borders;
+    private double area;
+    private Map<String, Map<String, String>> demonyms;
+    private String flag;
+    private Map<String, String> maps;
+    private Long population;
+    private Map<String, Double> gini;
+    private String fifa;
+    private CountryCar car;
+    private List<String> timezones;
+    private List<String> continents;
+    private Map<String, String> flags;
+    private Map<String, String> coatOfArms;
+    private String startOfWeek;
+    private Map<String, List<Double>> capitalInfo;
+    private Map<String, String> postalCode;
+
+    private Country() {
+        // private constructor to enforce the use of the builder
+    }
+
+    public static class CountryBuilder {
+        private Country country;
+
+        public CountryBuilder() {
+            country = new Country();
+        }
+
+        public CountryBuilder withName(CountryName name) {
+            country.name = name;
+            return this;
+        }
+
+        public CountryBuilder withTld(List<String> tld) {
+            country.tld = tld;
+            return this;
+        }
+
+        public CountryBuilder withCca2(String cca2) {
+            country.cca2 = cca2;
+            return this;
+        }
+
+        public CountryBuilder withCcn3(String ccn3) {
+            country.ccn3 = ccn3;
+            return this;
+        }
+
+        public CountryBuilder withCca3(String cca3) {
+            country.cca3 = cca3;
+            return this;
+        }
+
+        public CountryBuilder withCioc(String cioc) {
+            country.cioc = cioc;
+            return this;
+        }
+
+        public CountryBuilder withIndependent(boolean independent) {
+            country.independent = independent;
+            return this;
+        }
+
+        public CountryBuilder withStatus(String status) {
+            country.status = status;
+            return this;
+        }
+
+        public CountryBuilder withUnMember(boolean unMember) {
+            country.unMember = unMember;
+            return this;
+        }
+
+        public CountryBuilder withCurrencies(Map<String, Map<String, String>> currencies) {
+            country.currencies = currencies;
+            return this;
+        }
+
+        public CountryBuilder withIdd(CountryIdd idd) {
+            country.idd = idd;
+            return this;
+        }
+
+        public CountryBuilder withCapital(List<String> capital) {
+            country.capital = capital;
+            return this;
+        }
+
+        public CountryBuilder withAltSpellings(List<String> altSpellings) {
+            country.altSpellings = altSpellings;
+            return this;
+        }
+
+        public CountryBuilder withRegion(String region) {
+            country.region = region;
+            return this;
+        }
+
+        public CountryBuilder withSubregion(String subregion) {
+            country.subregion = subregion;
+            return this;
+        }
+
+        public CountryBuilder withLanguages(Map<String, String> languages) {
+            country.languages = languages;
+            return this;
+        }
+
+        public CountryBuilder withTranslations(Map<String, Map<String, String>> translations) {
+            country.translations = translations;
+            return this;
+        }
+
+        public CountryBuilder withLatlng(List<Double> latlng) {
+            country.latlng = latlng;
+            return this;
+        }
+
+        public CountryBuilder withLandlocked(boolean landlocked) {
+            country.landlocked = landlocked;
+            return this;
+        }
+
+        public CountryBuilder withBorders(List<String> borders) {
+            country.borders = borders;
+            return this;
+        }
+
+        public CountryBuilder withArea(double area) {
+            country.area = area;
+            return this;
+        }
+
+        public CountryBuilder withDemonyms(Map<String, Map<String, String>> demonyms) {
+            country.demonyms = demonyms;
+            return this;
+        }
+
+        public CountryBuilder withFlag(String flag) {
+            country.flag = flag;
+            return this;
+        }
+
+        public CountryBuilder withMaps(Map<String, String> maps) {
+            country.maps = maps;
+            return this;
+        }
+
+        public CountryBuilder withPopulation(Long population) {
+            country.population = population;
+            return this;
+        }
+
+        public CountryBuilder withGini(Map<String, Double> gini) {
+            country.gini = gini;
+            return this;
+        }
+
+        public CountryBuilder withFifa(String fifa) {
+            country.fifa = fifa;
+            return this;
+        }
+
+        public CountryBuilder withCar(CountryCar car) {
+            country.car = car;
+            return this;
+        }
+
+        public CountryBuilder withTimezones(List<String> timezones) {
+            country.timezones = timezones;
+            return this;
+        }
+
+        public CountryBuilder withContinents(List<String> continents) {
+            country.continents = continents;
+            return this;
+        }
+
+        public CountryBuilder withFlags(Map<String, String> flags) {
+            country.flags = flags;
+            return this;
+        }
+
+        public CountryBuilder withCoatOfArms(Map<String, String> coatOfArms) {
+            country.coatOfArms = coatOfArms;
+            return this;
+        }
+
+        public CountryBuilder withStartOfWeek(String startOfWeek) {
+            country.startOfWeek = startOfWeek;
+            return this;
+        }
+
+        public CountryBuilder withCapitalInfo(Map<String, List<Double>> capitalInfo) {
+            country.capitalInfo = capitalInfo;
+            return this;
+        }
+
+        public CountryBuilder withPostalCode(Map<String, String> postalCode) {
+            country.postalCode = postalCode;
+            return this;
+        }
+
+        public Country build() {
+            return country;
+        }
+    }
+}
+Тепер ви можете використовувати цей Builder для зручного створення об'єктів класу Country. Наприклад:
+
+java
+Copy code
+Country country = new Country.CountryBuilder()
+        .withName(name)
+        .withTld(tld)
+        .withCca2(cca2)
+        .withCcn3(ccn3)
+        .withCca3(cca3)
+        .withCioc(cioc)
+        .withIndependent(independent)
+        .withStatus(status)
+        .withUnMember(unMember)
+        .withCurrencies(currencies)
+        .withIdd(idd)
+        .withCapital(capital)
+        .withAltSpellings(altSpellings)
+        .withRegion(region)
+        .withSubregion(subregion)
+        .withLanguages(languages)
+        .withTranslations(translations)
+        .withLatlng(latlng)
+        .
+
+
+
+
+User
+Згенеруй ще Builder для цього класу 
+
+public class CountryName {
+
+    private String common;
+
+    private String official;
+
+    private Map<String, Map<String, String>> nativeName;
+}
+ChatGPT
+Ось генерований патерн Builder для класу CountryName:
+
+java
+Copy code
+public class CountryName {
+
+    private String common;
+    private String official;
+    private Map<String, Map<String, String>> nativeName;
+
+    private CountryName() {
+        // private constructor to enforce the use of the builder
+    }
+
+    public static class CountryNameBuilder {
+        private CountryName countryName;
+
+        public CountryNameBuilder() {
+            countryName = new CountryName();
+        }
+
+        public CountryNameBuilder withCommon(String common) {
+            countryName.common = common;
+            return this;
+        }
+
+        public CountryNameBuilder withOfficial(String official) {
+            countryName.official = official;
+            return this;
+        }
+
+        public CountryNameBuilder withNativeName(Map<String, Map<String, String>> nativeName) {
+            countryName.nativeName = nativeName;
+            return this;
+        }
+
+        public CountryName build() {
+            return countryName;
+        }
+    }
+}
+Ви можете використовувати цей Builder для зручного створення об'єктів класу CountryName. Наприклад:
+
+java
+Copy code
+CountryName countryName = new CountryName.CountryNameBuilder()
+        .withCommon(common)
+        .withOfficial(official)
+        .withNativeName(nativeName)
+        .build();
+
+
+
+
+User
+Згенеруй ще два Builder для цих двох класів, вже без прикладу використання.
+
+public class CountryCar {
+
+    private List<String> signs;
+
+    private String side;
+}
+
+та
+
+public class CountryIdd {
+
+    private String root;
+
+    private List<String> suffixes;
+}
+ChatGPT
+Ось генеровані патерни Builder для класів CountryCar і CountryIdd:
+
+java
+Copy code
+public class CountryCar {
+    
+    private List<String> signs;
+    private String side;
+    
+    private CountryCar() {
+        // private constructor to enforce the use of the builder
+    }
+    
+    public static class CountryCarBuilder {
+        private CountryCar countryCar;
+        
+        public CountryCarBuilder() {
+            countryCar = new CountryCar();
+        }
+        
+        public CountryCarBuilder withSigns(List<String> signs) {
+            countryCar.signs = signs;
+            return this;
+        }
+        
+        public CountryCarBuilder withSide(String side) {
+            countryCar.side = side;
+            return this;
+        }
+        
+        public CountryCar build() {
+            return countryCar;
+        }
+    }
+}
+java
+Copy code
+public class CountryIdd {
+    
+    private String root;
+    private List<String> suffixes;
+    
+    private CountryIdd() {
+        // private constructor to enforce the use of the builder
+    }
+    
+    public static class CountryIddBuilder {
+        private CountryIdd countryIdd;
+        
+        public CountryIddBuilder() {
+            countryIdd = new CountryIdd();
+        }
+        
+        public CountryIddBuilder withRoot(String root) {
+            countryIdd.root = root;
+            return this;
+        }
+        
+        public CountryIddBuilder withSuffixes(List<String> suffixes) {
+            countryIdd.suffixes = suffixes;
+            return this;
+        }
+        
+        public CountryIdd build() {
+            return countryIdd;
+        }
+    }
+}
+Ви можете використовувати ці Buildery для зручного створення об'єктів класів CountryCar і CountryIdd.
+
+
+
+
+
+User
+Поясни різницю між анотаціями Bifore, BeforeEach, BeforeTest
+ChatGPT
+Аннотації @Before, @BeforeEach і @BeforeTest є частиною тестових фреймворків і використовуються для виконання коду перед запуском тестових методів. Ось їх різниця:
+
+@Before: Ця аннотація використовується в JUnit 4 і виконує метод перед кожним тестовим методом у тестовому класі. Він дозволяє виконати певну підготовку або налаштування, яке потрібно для всіх тестів у класі.
+
+@BeforeEach: Ця аннотація використовується в JUnit 5 і також виконує метод перед кожним тестовим методом у тестовому класі. Вона є аналогом @Before у JUnit 4. Використання @BeforeEach рекомендується в нових тестових сценаріях JUnit 5.
+
+@BeforeTest: Ця аннотація використовується в TestNG і виконує метод перед кожним тестовим методом у тестовому класі. Вона використовується для виконання підготовки або ініціалізації, яка потрібна для кожного тесту.
+
+Основна різниця між ними полягає в тому, які тестові фреймворки використовують ці аннотації та в якому контексті вони виконуються. @Before використовується в JUnit 4, @BeforeEach використовується в JUnit 5, а @BeforeTest використовується в TestNG.
+
+
+
+
+
+User
+Перевірь цей тестовий клас, в якому є тільки один тест, що перевіряє getCountriesByName метод сервісу CountriesServiceImpl. Додай до цього класу ще такі тести: тест на перевірку не валідних даних, тест на перевірку пустого name. 
+
+@ExtendWith(MockitoExtension.class)
+public class CountriesServiceTest {
+
+    @InjectMocks
+    private CountriesServiceImpl countriesService;
+
+    private List<Country> countries;
+
+    @BeforeEach
+    public void init() {
+        CountryName cName1 = new CountryName.CountryNameBuilder().withCommon("USA").build();
+        CountryName cName2 = new CountryName.CountryNameBuilder().withCommon("Canada").build();
+        CountryName cName3 = new CountryName.CountryNameBuilder().withCommon("Germany").build();
+
+        Country country1 = new Country.CountryBuilder().withName(cName1).build();
+        Country country2 = new Country.CountryBuilder().withName(cName2).build();
+        Country country3 = new Country.CountryBuilder().withName(cName3).build();
+
+        countries = new ArrayList<>();
+        countries.add(country1);
+        countries.add(country2);
+        countries.add(country3);
+    }
+
+    @Test
+    public void testGetCountriesByName_ValidName() {
+        String name = "an";
+
+        List<Country> result = countriesService.getCountriesByName(countries, name);
+
+        assertEquals(2, result.size());
+        assertTrue(result.stream().allMatch(country -> country.getName().getCommon().toLowerCase().contains(name.toLowerCase())));
+    }
+}
+ChatGPT
+Тестовий клас виглядає налаштованим вірно. Проте, для додавання додаткових тестів перевірки невалідних даних та пустого name, потрібно додати нові методи з аннотацією @Test в цей клас. Ось оновлений варіант класу CountriesServiceTest, який включає додаткові тести:
+
+java
+Copy code
+@ExtendWith(MockitoExtension.class)
+public class CountriesServiceTest {
+
+    @InjectMocks
+    private CountriesServiceImpl countriesService;
+
+    private List<Country> countries;
+
+    @BeforeEach
+    public void init() {
+        CountryName cName1 = new CountryName.CountryNameBuilder().withCommon("USA").build();
+        CountryName cName2 = new CountryName.CountryNameBuilder().withCommon("Canada").build();
+        CountryName cName3 = new CountryName.CountryNameBuilder().withCommon("Germany").build();
+
+        Country country1 = new Country.CountryBuilder().withName(cName1).build();
+        Country country2 = new Country.CountryBuilder().withName(cName2).build();
+        Country country3 = new Country.CountryBuilder().withName(cName3).build();
+
+        countries = new ArrayList<>();
+        countries.add(country1);
+        countries.add(country2);
+        countries.add(country3);
+    }
+
+    @Test
+    public void testGetCountriesByName_ValidName() {
+        String name = "an";
+
+        List<Country> result = countriesService.getCountriesByName(countries, name);
+
+        assertEquals(2, result.size());
+        assertTrue(result.stream().allMatch(country -> country.getName().getCommon().toLowerCase().contains(name.toLowerCase())));
+    }
+
+    @Test
+    public void testGetCountriesByName_InvalidName() {
+        String name = "123";
+
+        assertThrows(CountriesParameterValidateException.class, () -> countriesService.getCountriesByName(countries, name));
+    }
+
+    @Test
+    public void testGetCountriesByName_EmptyName() {
+        String name = "";
+
+        List<Country> result = countriesService.getCountriesByName(countries, name);
+
+        assertEquals(3, result.size());
+    }
+}
+У цьому прикладі додано два нові тести: testGetCountriesByName_InvalidName для перевірки невалідного імені та testGetCountriesByName_EmptyName для перевірки пустого імені.
+
+
+
+
+
+User
+Чи можливо в JUnit поєднати декілька тестів в один який би приймав різні дані, як це реалізовано в Spock в блоці where
+
+@Test
+    public void testGetCountriesByName_InvalidName() {
+        String name = "123";
+
+        Exception exception = assertThrows(CountriesParameterValidateException.class, () -> countriesService.getCountriesByName(countries, name));
+
+        String expected = "Invalid 'name' format. Only letters are allowed.";
+
+        assertEquals(expected, exception.getMessage());
+    }
+
+    @Test
+    public void testGetCountriesByName_EmptyName() {
+        String name = "";
+
+        Exception exception = assertThrows(CountriesParameterValidateException.class, () -> countriesService.getCountriesByName(countries, name));
+
+        String expected = "Invalid 'name' format. Only letters are allowed.";
+
+        assertEquals(expected, exception.getMessage());
+    }
+ChatGPT
+У стандартному JUnit немає вбудованої функціональності для комбінування різних варіантів вхідних даних у один тест. Проте, є кілька підходів, які можуть бути використані для досягнення подібного ефекту.
+
+Один з підходів - використання параметризованих тестів за допомогою аннотації @ParameterizedTest та фабричного методу для надання різних вхідних даних. Ось приклад:
+
+java
+Copy code
+@ExtendWith(MockitoExtension.class)
+public class CountriesServiceTest {
+
+    @InjectMocks
+    private CountriesServiceImpl countriesService;
+
+    private List<Country> countries;
+
+    @BeforeEach
+    public void init() {
+        // Ініціалізація countries
+    }
+
+    @ParameterizedTest
+    @CsvSource({"123, Invalid 'name' format. Only letters are allowed.", "", Invalid 'name' format. Only letters are allowed."})
+    public void testGetCountriesByName_InvalidInputs(String name, String expectedErrorMessage) {
+        Exception exception = assertThrows(CountriesParameterValidateException.class, () -> countriesService.getCountriesByName(countries, name));
+        assertEquals(expectedErrorMessage, exception.getMessage());
+    }
+}
+У цьому прикладі тест testGetCountriesByName_InvalidInputs використовує аннотацію @ParameterizedTest та @CsvSource для надання різних вхідних даних у вигляді CSV рядків. Кожен рядок містить значення name та очікувану повідомлення про помилку. Тест буде виконуватись для кожного рядка і перевіряти, чи виникає очікувана помилка з відповідним повідомленням.
+
+Іншим підходом є використання бібліотеки JUnit Vintage, яка надає підтримку параметризованих тестів у старіших версіях JUnit. За допомогою JUnit Vintage можна використовувати аннотацію @RunWith(Parameterized.class) для параметризованих тестів, які поєднують різні вхідні дані.
+
+
+
+
+
+User
+Зроби такий самий параметризований тест для цих двох тестів
+
+@Test
+    public void testGetCountriesByName_ValidName() {
+        String name = "an";
+
+        List<Country> result = countriesService.getCountriesByName(countries, name);
+
+        assertEquals(2, result.size());
+        assertTrue(result.stream().allMatch(country -> country.getName().getCommon().toLowerCase().contains(name.toLowerCase())));
+    }
+
+    @Test
+    public void testGetCountriesByName_NoFoundCountry() {
+        String name = "spp";
+
+        List<Country> result = countriesService.getCountriesByName(countries, name);
+
+        assertEquals(0, result.size());
+        assertTrue(result.stream().allMatch(country -> country.getName().getCommon().toLowerCase().contains(name.toLowerCase())));
+    }
+ChatGPT
+Ось параметризований тест, який об'єднує два тести testGetCountriesByName_ValidName та testGetCountriesByName_NoFoundCountry:
+
+java
+Copy code
+@ExtendWith(MockitoExtension.class)
+public class CountriesServiceTest {
+
+    @InjectMocks
+    private CountriesServiceImpl countriesService;
+
+    private List<Country> countries;
+
+    @BeforeEach
+    public void init() {
+        // Ініціалізація countries
+    }
+
+    @ParameterizedTest
+    @CsvSource({"an, 2", "spp, 0"})
+    public void testGetCountriesByName(String name, int expectedSize) {
+        List<Country> result = countriesService.getCountriesByName(countries, name);
+
+        assertEquals(expectedSize, result.size());
+
+        if (expectedSize > 0) {
+            assertTrue(result.stream().allMatch(country -> country.getName().getCommon().toLowerCase().contains(name.toLowerCase())));
+        }
+    }
+}
+У цьому прикладі тест testGetCountriesByName використовує аннотацію @ParameterizedTest та @CsvSource для надання різних вхідних даних. Кожен рядок містить значення name та очікувану кількість результатів. Тест перевіряє, чи отримана кількість результатів співпадає з очікуваною, а також, якщо кількість результатів більше нуля, перевіряє, чи всі результати містять шукане значення name.
+
+
+
+
+
+User
+Так само приведи приклади параметризованих тестів для цього методу, які б вже перевіряли поле population. Тобто повино бути два параметризованих теста: в першому перевіряється валідна ситуація, коли population містить числа, та другий тест, в якому не валідні ситуації
+
+public List<Country> getCountriesByPopulation(List<Country> countries, String population) {
+        boolean isValid = Pattern.matches("^[0-9]{1,4}$", population);
+
+        if (!isValid) {
+            throw new CountriesParameterValidateException("Invalid 'population' format. Only numbers are allowed (max: 9999).");
+        }
+
+        return countries.stream()
+                .filter(pop -> pop.getPopulation() < Long.parseLong(population) * 1000000)
+                .toList();
+    }
+ChatGPT
+Ось приклади параметризованих тестів для методу getCountriesByPopulation:
+
+java
+Copy code
+@ExtendWith(MockitoExtension.class)
+public class CountriesServiceTest {
+
+    @InjectMocks
+    private CountriesServiceImpl countriesService;
+
+    private List<Country> countries;
+
+    @BeforeEach
+    public void init() {
+        // Ініціалізація countries
+    }
+
+    @ParameterizedTest
+    @CsvSource({"2, 2", "5, 3", "10, 3"})
+    public void testGetCountriesByPopulation_ValidPopulation(String population, int expectedSize) {
+        List<Country> result = countriesService.getCountriesByPopulation(countries, population);
+
+        assertEquals(expectedSize, result.size());
+        assertTrue(result.stream().allMatch(country -> country.getPopulation() < Long.parseLong(population) * 1000000));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"abc", "10000", "123456"})
+    public void testGetCountriesByPopulation_InvalidPopulation(String population) {
+        assertThrows(CountriesParameterValidateException.class, () -> countriesService.getCountriesByPopulation(countries, population));
+    }
+}
+У першому тесті testGetCountriesByPopulation_ValidPopulation використовується аннотація @ParameterizedTest та @CsvSource для надання різних вхідних даних. Кожен рядок містить значення population та очікувану кількість результатів. Тест перевіряє, чи отримана кількість результатів співпадає з очікуваною, а також перевіряє, чи вся країна має населення менше заданого population.
+
+У другому тесті testGetCountriesByPopulation_InvalidPopulation перевіряється ситуація, коли передане значення population недійсне. Тест перевіряє, чи викликається виняток CountriesParameterValidateException при передачі неприпустимого значення population.
+
+
+
+
+
+User
+Так само згенеруй параметризований тест для цього методу
+
+public List<Country> sortCountriesByOrder(List<Country> countries, String order) {
+        if (!order.equals("asc") && !order.equals("desc")) {
+            throw new CountriesParameterValidateException("Invalid 'order' format. Only 'asc' or 'desc' are allowed.");
+        }
+
+        Comparator<Country> comparator = Comparator.comparing(c -> c.getName().getCommon());
+
+        if (order.equals("desc")) {
+            comparator = comparator.reversed();
+        }
+
+        return countries.stream()
+                .sorted(comparator)
+                .collect(Collectors.toList());
+    }
+ChatGPT
+Ось приклад параметризованого тесту для методу sortCountriesByOrder:
+
+java
+Copy code
+@ExtendWith(MockitoExtension.class)
+public class CountriesServiceTest {
+
+    @InjectMocks
+    private CountriesServiceImpl countriesService;
+
+    private List<Country> countries;
+
+    @BeforeEach
+    public void init() {
+        // Ініціалізація countries
+    }
+
+    @ParameterizedTest
+    @CsvSource({"asc", "desc"})
+    public void testSortCountriesByOrder_ValidOrder(String order) {
+        List<Country> result = countriesService.sortCountriesByOrder(countries, order);
+
+        assertTrue(isSorted(result, order));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"invalid", "123", "abc"})
+    public void testSortCountriesByOrder_InvalidOrder(String order) {
+        assertThrows(CountriesParameterValidateException.class, () -> countriesService.sortCountriesByOrder(countries, order));
+    }
+
+    private boolean isSorted(List<Country> countries, String order) {
+        if (order.equals("asc")) {
+            for (int i = 0; i < countries.size() - 1; i++) {
+                if (countries.get(i).getName().getCommon().compareTo(countries.get(i + 1).getName().getCommon()) > 0) {
+                    return false;
+                }
+            }
+        } else if (order.equals("desc")) {
+            for (int i = 0; i < countries.size() - 1; i++) {
+                if (countries.get(i).getName().getCommon().compareTo(countries.get(i + 1).getName().getCommon()) < 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}
+У тесті testSortCountriesByOrder_ValidOrder використовується аннотація @ParameterizedTest та @CsvSource для передачі різних вхідних даних. Кожен рядок містить значення order (asc або desc). Тест перевіряє, чи список країн result відсортований відповідно до переданого порядку order.
+
+У другому тесті testSortCountriesByOrder_InvalidOrder перевіряється ситуація, коли передане значення order недійсне. Тест перевіряє, чи викликається виняток CountriesParameterValidateException при передачі неприпустимого значення order.
+
+Додатково була додана приватна допоміжна метод isSorted, який перевіряє, чи список країн відсортований відповідно до переданого порядку.
+
+
+
+
+
+User
+Так само напиши параметризовані тести для цього методу
+
+public List<Country> limitCountries(List<Country> countries, String size) {
+        boolean isValid = Pattern.matches("^[0-9]{1,4}$", size);
+
+        if (!isValid) {
+            throw new CountriesParameterValidateException("Invalid 'size' format. Only numbers are allowed (max: 9999).");
+        }
+
+        int dataSize = countries.size();
+        int endIndex = Math.min(Integer.parseInt(size), dataSize);
+
+        return countries.subList(0, endIndex);
+    }
+ChatGPT
+Ось приклад параметризованого тесту для методу limitCountries:
+
+java
+Copy code
+@ExtendWith(MockitoExtension.class)
+public class CountriesServiceTest {
+
+    @InjectMocks
+    private CountriesServiceImpl countriesService;
+
+    private List<Country> countries;
+
+    @BeforeEach
+    public void init() {
+        // Ініціалізація countries
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"1", "2", "3", "5"})
+    public void testLimitCountries_ValidSize(String size) {
+        List<Country> result = countriesService.limitCountries(countries, size);
+
+        assertEquals(Integer.parseInt(size), result.size());
+        assertTrue(countries.containsAll(result));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"invalid", "123", "abc"})
+    public void testLimitCountries_InvalidSize(String size) {
+        assertThrows(CountriesParameterValidateException.class, () -> countriesService.limitCountries(countries, size));
+    }
+}
+У тесті testLimitCountries_ValidSize використовується аннотація @ParameterizedTest та @ValueSource для передачі різних вхідних даних. Кожне значення size визначає кількість країн, яку необхідно обмежити. Тест перевіряє, чи повертається список країн result, який містить відповідну кількість країн і являє собою підсписок вихідного списку countries.
+
+У другому тесті testLimitCountries_InvalidSize перевіряється ситуація, коли передане значення size недійсне. Тест перевіряє, чи викликається виняток CountriesParameterValidateException при передачі неприпустимого значення size.

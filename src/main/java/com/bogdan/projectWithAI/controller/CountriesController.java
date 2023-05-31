@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 public class CountriesController {
 
-    private final String BASE_URL = "https://restcountries.com/v3.1/all";
+    private final static String BASE_URL = "https://restcountries.com/v3.1/all";
 
     private final CountriesServiceImpl countriesService;
 
@@ -26,7 +26,7 @@ public class CountriesController {
 
     @GetMapping("/countries")
     @ResponseBody
-    private ResponseEntity<List<Country>> getCountries(@RequestParam(required = false, name = "name") String name,
+    public ResponseEntity<List<Country>> getCountries(@RequestParam(required = false, name = "name") String name,
                                                        @RequestParam(required = false, name = "pop") String population,
                                                        @RequestParam(required = false, name = "order") String order,
                                                        @RequestParam(required = false, name = "size") String size) {

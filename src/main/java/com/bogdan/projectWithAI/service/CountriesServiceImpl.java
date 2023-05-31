@@ -76,7 +76,7 @@ public class CountriesServiceImpl implements CountriesService {
 
         return countries.stream()
                 .sorted(comparator)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
