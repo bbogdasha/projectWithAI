@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -37,39 +36,9 @@ public class CountriesController {
                 new ParameterizedTypeReference<>() {});
 
         List<Country> countries = response.getBody();
-        if (countries == null) {
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
-        }
 
-        if (name != null) {
-            countries = countriesService.getCountriesByName(countries, name);
-        }
+        List<Country> filteredCountries = countriesService.applyFilters(countries, name, population, order, size);
 
-        if (population != null) {
-            countries = countriesService.getCountriesByPopulation(countries, population);
-        }
-
-        if (order != null) {
-            countries = countriesService.sortCountriesByOrder(countries, order);
-        }
-
-        if (size != null) {
-            countries = countriesService.limitCountries(countries, size);
-        }
-
-
-        for (Country country : countries) {
-            System.out.println(country.getName().getCommon() + " --- " + country.getPopulation());
-        }
-
-        System.out.println(countries.size());
-        System.out.println(name);
-        System.out.println(population);
-        System.out.println(order);
-        System.out.println(size);
-
-        return !countries.isEmpty()
-                ? new ResponseEntity<>(countries, HttpStatus.OK)
-                : new ResponseEntity<>(countries, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(filteredCountries, HttpStatus.OK);
     }
 }

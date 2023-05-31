@@ -4,6 +4,7 @@ import com.bogdan.projectWithAI.exception.CountriesParameterValidateException;
 import com.bogdan.projectWithAI.model.Country;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -11,6 +12,29 @@ import java.util.stream.Collectors;
 
 @Service
 public class CountriesServiceImpl implements CountriesService {
+
+    public List<Country> applyFilters(List<Country> countries, String name, String population, String order, String size) {
+        if (countries == null) {
+            return new ArrayList<>();
+        }
+
+        if (name != null) {
+            countries = getCountriesByName(countries, name);
+        }
+
+        if (population != null) {
+            countries = getCountriesByPopulation(countries, population);
+        }
+
+        if (order != null) {
+            countries = sortCountriesByOrder(countries, order);
+        }
+
+        if (size != null) {
+            countries = limitCountries(countries, size);
+        }
+        return countries;
+    }
 
     @Override
     public List<Country> getCountriesByName(List<Country> countries, String name) {
